@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    stm32f1xx_ll_pwr.c
+  * @file    stm32f1xx_hal_pcd_ex.h
   * @author  MCD Application Team
-  * @brief   PWR LL module driver.
+  * @brief   Header file of Extended PCD HAL module.
   ******************************************************************************
   * @attention
   *
@@ -31,71 +31,84 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
-#if defined(USE_FULL_LL_DRIVER)
+  */ 
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __STM32F1xx_HAL_PCD_EX_H
+#define __STM32F1xx_HAL_PCD_EX_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+#if defined(STM32F102x6) || defined(STM32F102xB) || \
+    defined(STM32F103x6) || defined(STM32F103xB) || \
+    defined(STM32F103xE) || defined(STM32F103xG) || \
+    defined(STM32F105xC) || defined(STM32F107xC)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_ll_pwr.h"
-#include "stm32f1xx_ll_bus.h"
+#include "stm32f1xx_hal_def.h"
 
-/** @addtogroup STM32F1xx_LL_Driver
+/** @addtogroup STM32F1xx_HAL_Driver
   * @{
   */
 
-#if defined(PWR)
-
-/** @defgroup PWR_LL PWR
+/** @addtogroup PCDEx
   * @{
   */
 
-/* Private types -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private constants ---------------------------------------------------------*/
-/* Private macros ------------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macros -----------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
-/** @addtogroup PWR_LL_Exported_Functions
+/** @addtogroup PCDEx_Exported_Functions PCDEx Exported Functions
   * @{
+  */
+/** @addtogroup PCDEx_Exported_Functions_Group1 Peripheral Control functions
+  * @{
+  */
+#if defined (USB_OTG_FS)
+HAL_StatusTypeDef HAL_PCDEx_SetTxFiFo(PCD_HandleTypeDef *hpcd, uint8_t fifo, uint16_t size);
+HAL_StatusTypeDef HAL_PCDEx_SetRxFiFo(PCD_HandleTypeDef *hpcd, uint16_t size);
+#endif /* USB_OTG_FS */
+
+#if defined (USB)
+HAL_StatusTypeDef HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd, 
+                                     uint16_t ep_addr,
+                                     uint16_t ep_kind,
+                                     uint32_t pmaadress);
+#endif /* USB */
+/**
+  * @}
   */
 
-/** @addtogroup PWR_LL_EF_Init
+/** @addtogroup PCDEx_Exported_Functions_Group2 Peripheral State functions
   * @{
   */
+void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state);
+/**
+  * @}
+  */
+/**
+  * @}
+  */
+/**
+  * @}
+  */ 
 
 /**
-  * @brief  De-initialize the PWR registers to their default reset values.
-  * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: PWR registers are de-initialized
-  *          - ERROR: not applicable
+  * @}
   */
-ErrorStatus LL_PWR_DeInit(void)
-{
-  /* Force reset of PWR clock */
-  LL_APB1_GRP1_ForceReset(LL_APB1_GRP1_PERIPH_PWR);
+#endif /* STM32F102x6 || STM32F102xB || */
+       /* STM32F103x6 || STM32F103xB || */
+       /* STM32F103xE || STM32F103xG || */
+       /* STM32F105xC || STM32F107xC    */
 
-  /* Release reset of PWR clock */
-  LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_PWR);
-
-  return SUCCESS;
+#ifdef __cplusplus
 }
+#endif
 
-/**
-  * @}
-  */
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-#endif /* defined(PWR) */
-/**
-  * @}
-  */
-
-#endif /* USE_FULL_LL_DRIVER */
+#endif /* __STM32F1xx_HAL_PCD_EX_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -39,7 +39,9 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include <usbd_cdc_if.h>
 #include "main.h"
+#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -92,18 +94,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  
-
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
-  /* System interrupt init*/
-
-  /**NOJTAG: JTAG-DP Disabled and SW-DP Enabled 
-  */
-  LL_GPIO_AF_Remap_SWJ_NOJTAG();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -118,6 +109,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -125,12 +117,28 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   LL_GPIO_TogglePin(GPIOB, LL_GPIO_PIN_11);
+  uint8_t CDC_BUF[128];
+  CDC_BUF[0]  = 'H';
+  CDC_BUF[1]  = 'E';
+  CDC_BUF[2]  = 'L';
+  CDC_BUF[3]  = 'L';
+  CDC_BUF[4]  = 'O';
+  CDC_BUF[5]  = ' ';
+  CDC_BUF[6]  = 'C';
+  CDC_BUF[7]  = 'D';
+  CDC_BUF[8]  = 'C';
+  CDC_BUF[9]  = '\r';
+  CDC_BUF[10] = '\n';
 
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
   while (1)
   {
+
     LL_mDelay(300);
     LL_GPIO_TogglePin(GPIOB, LL_GPIO_PIN_11 | LL_GPIO_PIN_12);
+    // Stuff the buffer
+
+    CDC_Transmit_FS(CDC_BUF,11);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -179,6 +187,7 @@ void SystemClock_Config(void)
   LL_Init1msTick(72000000);
   LL_SYSTICK_SetClkSource(LL_SYSTICK_CLKSOURCE_HCLK);
   LL_SetSystemCoreClock(72000000);
+  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
 }
 
 /**
